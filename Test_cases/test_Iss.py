@@ -1,8 +1,9 @@
 import mock
 from jsonschema import validate
 import Main.Iss_location
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 import unittest
+import time
 
 
 class TestcaseISS(unittest.TestCase):
@@ -65,22 +66,33 @@ class TestcaseISS(unittest.TestCase):
             self.assertEqual(resp1["message"], "success")
             self.assertEqual(resp, self.dictio)
 
+    def test_speed(self):
+        """
+        Purpose of this test is to verify that the speed covered by the ISS in 10 seconds is within range
+        """
+        range_min = 20000
+        range_max = 30000
+        x0 = Main.Iss_location.get_coordinates(Main.Iss_location.get_json())
+        time.sleep(1)
+        x1 = Main.Iss_location.get_coordinates(Main.Iss_location.get_json())
+        speed = Main.Iss_location.get_avg_speed(x0, x1)
+
+        # distance = getting1.distance_between_coordinate(x0, x1)
+        # distance = 24000
+        if range_min < speed < range_max:
+            return True
+        else:
+            return False
+
     def test_distance(self):
         x = Main.Iss_location.distance_between_coordinate((11.1395, -143.6654), (11.9168, -143.0815))
         print(x)
         self.assertEqual(Main.Iss_location.distance_between_coordinate((11.1395, -143.6654), (11.9168, -143.0815)),
                          107.2522412348488)
 
-    def test_avg_speed(self):
-        self.assertEqual(Main.Iss_location.get_avg_speed({'timestamp': 1643322942, 'latitude': 37.1165, 'longitude': -118.179},
-                                                {'timestamp': 1643322957, 'latitude': 37.7436, 'longitude': -117.2545}),
-                         25750.036451600303)
-        # with self.assertRaises(ValueError):
-        #     getting1.get_avg_speed({'timestamp': "", 'latitude': 37.1165, 'longitude': -118.179},
-        #                           {'timestamp': 1643322957, 'latitude': 37.7436, 'longitude': -117.2545})
-
     def tearDown(self):
         print("closed")
 
-# if __name__ == "__main__":
-#     unittest.main()
+
+if __name__ == "__main__":
+    unittest.main()

@@ -42,6 +42,7 @@ def get_coordinates(data):
     dict
         Dictionary with keys "latitude", "longitude" and
         "timestamp" indicating time and position of ISS.
+        :param data:
     """
     ts_la_lo = {}
 
